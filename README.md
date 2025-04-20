@@ -14,13 +14,17 @@ This project takes two approaches to creating an FIR filter:
 
   Can run on both simulated and real time data. Due to limitations of yfinance refresh rate, the difference in speed will not be seen from this data. 
 
+  Waveform sample:
+  ![image](https://github.com/user-attachments/assets/ad800ac7-75a7-4f7e-a513-5846f6185034)
+
+
 
 # Hardware Design
 
   Normalization: Configurable based on 
   
   Waveform sample:
-  ![image](https://github.com/user-attachments/assets/fccadcb6-f1bc-4442-a9d1-4c9c4017c7fe)
+  
 
 
 
