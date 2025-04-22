@@ -1,76 +1,64 @@
-import yfinance as yf
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import datetime
-import time
 import numpy as np
+import matplotlib.pyplot as plt
+import time
 
-# Choose your stock symbol
-symbol = "AAPL"
+# === Configuration ===
+NUM_SAMPLES = 100
+BASE_PRICE = 100.00
+NOISE_RANGE = 0.50
+TAPS = 12  # For plotting steady-state
+np.random.seed(0)
 
-# Set data fetch interval (e.g., 1m = 1 minute candles)
-interval = "1m"
-
-# FIR filter coefficients (simple moving average)
+# FIR filter coefficients
 coeffs = np.array([1, 2, 3, 4, 4, 3, 2, 1])
-coeffs = coeffs / np.sum(coeffs)  # Normalize
-
-# Track recent price data
-price_history = []
-filtered_history = []
-
-# Set max number of points to show on plot
-MAX_POINTS = 50
+coeffs = coeffs / np.sum(coeffs)
 FIR_TAPS = len(coeffs)
 
-def fetch_price():
-    # Get most recent candle
-    ticker = yf.Ticker(symbol)
-    data = ticker.history(period="5d", interval=interval)
-    
-    if not data.empty:
-        return data['Close'].iloc[-1]
-    else:
-        return None
+# Generate noisy price data (simulated like Verilog)
+price_data = BASE_PRICE + np.random.randint(-50, 51, size=NUM_SAMPLES) / 100.0
 
-# Animation function
-def update(frame):
-    current_price = fetch_price()
-    if current_price is not None:
-        price_history.append(current_price)
-        if len(price_history) > MAX_POINTS:
-            price_history.pop(0)
+# Apply FIR filter
+filtered_data = []
+filter_times = []
 
-        # Apply FIR filter if we have enough samples
-        if len(price_history) >= FIR_TAPS:
-            start_time = time.perf_counter()
+for i in range(FIR_TAPS - 1, NUM_SAMPLES):
+    window = price_data[i - FIR_TAPS + 1: i + 1][::-1]
 
-            window = price_history[-FIR_TAPS:]
-            filtered_val = np.dot(window[::-1], coeffs)  # Reverse for FIR style
+    start_time = time.perf_counter()
+    filtered_val = np.dot(window, coeffs)
+    end_time = time.perf_counter()
 
-            end_time = time.perf_counter()
-            filter_time_us = (end_time - start_time) * 1e6  # microseconds
+    filter_time_us = (end_time - start_time) * 1e6
+    filter_times.append(filter_time_us)
+    filtered_data.append(filtered_val)
 
-            filtered_history.append(filtered_val)
-            if len(filtered_history) > MAX_POINTS:
-                filtered_history.pop(0)
+# === Average FIR processing time ===
+avg_time_us = np.mean(filter_times)
+print(f"\nAverage FIR Filter Processing Time over {len(filter_times)} samples: {avg_time_us:.2f} μs")
 
-            print(f"FIR Filter Time: {filter_time_us:.2f} μs")
+# === Throughput calculation ===
+throughput = 1_000_000 / avg_time_us  # samples per second
+print(f"Throughput: {throughput:.2f} samples/sec")
 
-    # Plot
-    ax.clear()
-    ax.plot(price_history, label=f'{symbol} Price')
-    if len(filtered_history) > 0:
-        ax.plot(range(len(price_history)-len(filtered_history), len(price_history)),
-                filtered_history, label='FIR Filtered', linewidth=2)
-    ax.set_title(f"Real-Time {symbol} Price with FIR Filter")
-    ax.set_ylabel("Price (USD)")
-    ax.set_xlabel("Time (ticks)")
-    ax.legend()
-    ax.grid(True)
+# === Plot styled like Verilog version ===
+cycles = np.arange(NUM_SAMPLES)
+filtered_cycles = cycles[FIR_TAPS - 1:]
 
-# Setup plot
-fig, ax = plt.subplots()
-ani = animation.FuncAnimation(fig, update, interval=60)  # Update every 60s (1m data)
+# Trim for steady-state region
+steady_start = TAPS
+steady_end = NUM_SAMPLES - TAPS
+
+plt.figure(figsize=(12, 5))
+plt.plot(cycles[steady_start:steady_end], price_data[steady_start:steady_end],
+         label='Noisy Input (x_in)', color='deepskyblue', linewidth=1.5)
+plt.plot(filtered_cycles[steady_start - (FIR_TAPS - 1):steady_end - (FIR_TAPS - 1)],
+         filtered_data[steady_start - (FIR_TAPS - 1):steady_end - (FIR_TAPS - 1)],
+         label='Filtered Output (y_out)', color='orange', linewidth=2.5)
+
+plt.title("FIR Filter Output (Steady-State Region)")
+plt.xlabel("Cycle")
+plt.ylabel("Value")
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.legend(loc='upper right')
 plt.tight_layout()
 plt.show()
