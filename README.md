@@ -1,7 +1,6 @@
 # Real-Time FIR Filter in Verilog with Python Visualization
 
-The purpose of this project is to demonstrate how hardware acceleration via RTL can outperform software filtering
-for digital signal processing or financial data smoothing. 
+The purpose of this project is to demonstrate how hardware acceleration via RTL can outperform software filtering for digital signal processing or financial data smoothing. 
 
 This project takes two approaches to creating an FIR filter:
   - The first is written in Python and uses Numpy for convolution.
@@ -13,18 +12,25 @@ This project takes two approaches to creating an FIR filter:
 
 # Software Design
 
- # Hardware Design
+  Can run on both simulated and real time data. Due to limitations of yfinance refresh rate, the difference in speed will not be seen from this data. 
+
+  Waveform sample:
+  ![image](https://github.com/user-attachments/assets/ad800ac7-75a7-4f7e-a513-5846f6185034)
+
+
+
+# Hardware Design
 
   Normalization: Configurable based on 
   
   Waveform sample:
-  ![image](https://github.com/user-attachments/assets/7096db92-32fa-4256-a14c-6b9f3444f705)
+  
+
 
 
 # Performance Benchmark
 | Metric                    | Python (Software) | Verilog Sim (Hardware) |
 |---------------------------|-------------------|------------------------|
-| Avg processing time       |  
-|     (1000 samples)        |
-| Throughput                | 
+| Avg processing time(1000 samples) | 980 ns    |  
+| Throughput                | 915.461k samples/sec | 
 | Latency                   |   High (batch)    |    Low (streaming)     |
