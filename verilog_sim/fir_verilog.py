@@ -1,15 +1,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
-# Full path to your Vivado CSV output
-csv_path = r"C:\Users\dbmey\Vivado Projects\FIR Filter\FIR Filter.sim\sim_1\behav\xsim\fir_data.csv"
+# Relative path to Vivado CSV output
+csv_path = os.path.join("verilog_sim", "fir_data.csv")
 
 # Load CSV
 df = pd.read_csv(csv_path)
 
 # Ignore startup and tail transients
 TAPS = 12
-steady_state_df = df.iloc[TAPS:-TAPS]  # Exclude first/last 8 samples
+steady_state_df = df.iloc[TAPS:-TAPS]
 
 plt.figure(figsize=(12, 5))
 plt.plot(steady_state_df['cycle'], steady_state_df['x_in'], label='Noisy Input (x_in)', color='deepskyblue', linewidth=1.5)

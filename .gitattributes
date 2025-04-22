@@ -1,2 +1,15 @@
-# Auto detect text files and perform LF normalization
+# Auto normalize line endings for text files
 * text=auto
+
+# Python scripts
+*.py text diff=python
+
+# Verilog files
+*.v text
+*.vh text
+
+# CSV simulation outputs
+*.csv text
+
+# Markdown
+*.md text

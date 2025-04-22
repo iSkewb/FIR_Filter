@@ -1,0 +1,35 @@
+# Vivado junk
+*.jou
+*.log
+*.str
+*.xml
+*.xpr
+*.runs/
+*.sim/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.Xil/
+*.vivado/
+*.webtalk/
+*.wdb
+*.db
+*.bak
+*.data/
+*.tmp
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+
+# Jupyter Notebook checkpoints (if applicable)
+.ipynb_checkpoints/
