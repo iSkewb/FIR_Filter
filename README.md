@@ -42,20 +42,20 @@ Waveform sample:
 
 ### Python Version
 
-````bash
+```bash
 pip install -r requirements.txt
 cd python
 python fir_simulation.py
+```
 
 ###  Vivado Version
 Run the testbench in Vivado simulator. Output CSV (fir_data.csv) should be saved to verilog_sim/. Then visualize:
 ```bash
 cd python
 python plot_from_verilog_csv.py
-
+```
 
 ## Author
-Devon Meyer
-Computer Engineering & MS Finance
-Texas A&M University
-````
+Devon Meyer  
+Computer Engineering & MS Finance  
+Texas A&M University  
