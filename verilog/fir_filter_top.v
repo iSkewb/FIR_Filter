@@ -28,7 +28,7 @@ module fir_filter_top #(
     // You can change these values to suit your filter needs
     assign coeffs_flat = {
         16'd1, 16'd2, 16'd3, 16'd4, 16'd4, 16'd3, 16'd2, 16'd1
-    }; // taps[0] × coeff[0], ..., taps[7] × coeff[7]
+    }; // taps[0] ï¿½ coeff[0], ..., taps[7] ï¿½ coeff[7]
 
     // ===== 3. Multiplier Array =====
     fir_multiply_array #(.WIDTH(WIDTH), .TAPS(TAPS)) mults_inst (

@@ -20,16 +20,25 @@ x_vals = []
 y_vals = []
 
 def send_input(val):
-    ser.write(f"{val}\n".encode())
+    # Send 16-bit value as 2 bytes (MSB first, then LSB)
+    msb = (val >> 8) & 0xFF
+    lsb = val & 0xFF
+    ser.write(bytes([msb, lsb]))
 
 def read_output():
     try:
-        line = ser.readline()
-        print(repr(line))
+        # Read 2 bytes for 16-bit output (MSB first, then LSB)
+        data = ser.read(2)
+        if len(data) == 2:
+            # Convert bytes to signed 16-bit integer
+            val = (data[0] << 8) | data[1]
+            # Handle sign extension for signed 16-bit
+            if val >= 32768:
+                val -= 65536
+            return val
         return None
-        # line = ser.readline().decode().strip()
-        # return int(line)
-    except:
+    except Exception as e:
+        print("Read error:", e)
         return None
 
 # ========== Plotting ==========
